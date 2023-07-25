@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 
 using namespace std;
 
@@ -238,11 +239,73 @@ public:
         delete tmp;
     }
 
-    // void reverse()
+    void reverse()
+    {
+        Node *previous = nullptr;
+        Node *current = head;
+        while (current != nullptr)
+        {
+            Node *after = current->next;
+            current->next = previous;
+            previous = current;
+            current = after;
+        }
+        head = previous;
+    }
 
-    // void getNthFromEnd()
+    Node *getNthFromEnd(int index)
+    {
+        int endIndex = index - getSize();
+        endIndex = abs(endIndex);
+        return getNodeAt(endIndex - 1);
+    }
 
-    // void removeDuplicates()
+    // uses the "two-pointer technique" or "runner technique"
+    Node *getNthFromEnd2(int index)
+    {
+        Node *first = head;
+        Node *second = head;
+
+        for (int i = 0; i < index; i++)
+        {
+            if (second == nullptr)
+            {
+                cout << "Index out of range";
+                return nullptr;
+            }
+            second = second->next;
+        }
+
+        while (second->next != nullptr)
+        {
+            first = first->next;
+            second = second->next;
+        }
+
+        return first;
+    }
+
+    void removeDuplicates()
+    {
+        unordered_map<int, int> hashMap;
+        Node *current = head;
+        Node *previous = nullptr;
+        while (current != nullptr)
+        {
+            if (hashMap.count(current->data) > 0)
+            {
+                previous->next = current->next;
+                delete current;
+                current = previous->next;
+            }
+            else
+            {
+                hashMap[current->data] = 1;
+                previous = current;
+                current = current->next;
+            }
+        }
+    }
 
     void display()
     {
@@ -264,16 +327,25 @@ int main()
 {
 
     LinkedList mylist;
+    mylist.addElement(70);
+    mylist.addElement(70);
     mylist.addElement(10);
+    mylist.addElement(60);
     mylist.addElement(20);
+    mylist.addElement(20);
+    mylist.addElement(70);
     mylist.addElement(30);
+    mylist.addElement(70);
+    mylist.addElement(40);
+    mylist.addElement(40);
     mylist.addElement(40);
     mylist.addElement(50);
     mylist.addElement(60);
     mylist.addElement(70);
+    mylist.addElement(70);
 
     mylist.display();
-    mylist.removeElementAtIndex(2);
+    mylist.removeDuplicates();
     mylist.display();
 
     return 0;
